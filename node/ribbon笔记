@@ -1,0 +1,88 @@
+概述：
+Spring Cloud Ribbon是netflix ribbon实现的一天客户端 负载均衡的工具
+	
+	简单的说，ribbon是netflix发布的开源项目，主要功能是提供客户端的软件负载均衡算法
+	将netflix的中间层服务连接在一起，ribbon客户端组件提供一系列完善的配置项
+	如超时，重试等。简单的说，就是在配置文件中列出load balance(简称LB)后面所有的
+	的机器，ribbon会自动的帮助你基于某种规则（如简单轮询，随机连接等）去连接这些机器。
+	我们也很容易使用ribbon实现自定义的负载均衡算法
+
+作用：
+	LB，即负载均衡（load balance），在微服务或分布式集群中常用的一种应用
+	负载均衡简单说就是用户请求平摊的分配到多个服务上，从而达到系统的HA。
+	常见的负载均衡有软件Nginx，lvs,硬件F5等
+	相应的在中间件，例如：dubbo和springcloud中均给我们提供了负载均衡，springcloud的
+	负载均衡算法可以自定义。
+	方式：
+		集中式LB(偏硬件)
+			即在服务的消费方和提供方之间使用独立的LB设施（可以是硬件，如F5，也可以是软件，如Nginx）
+			由该设施负责把访问请求通过某种策略转发至服务的提供方；
+			
+		进程内LB（偏软件）
+			将LB逻辑继承到消费方，消费方从服务注册中心获知有哪些地址可用，然后在即再从这些地址选择出一个合适的服务器。
+			ribbon就是进程内LB，它只是一个类库，继承与于消费方进程，消费方提供他来获取发到服务提供方的地址
+官方资料： 
+	https://github.com/Netflix/ribbon/wiki/ 	
+
+配置：
+	1.1 GAV-maven
+	pom.xml
+		<!-- Ribbon相关 -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-ribbon</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+	application.yml
+		eureka:
+  client:
+    register-with-eureka: false
+    service-url: 
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/  
+
+	ConfigBean.java
+		@Bean
+		@LoadBalanced //spring cloud ribbon 实现的一套客户端，负载均衡的工具
+		public RestTemplate getRestTemplate()
+		{
+			return new RestTemplate();
+		}
+	1.2 @EnableXXX
+	
+	ribbon的核心组件Irule
+	ribbon策略：轮询，随机，根据响应时间加权等算法来求取提供服务的地址
+	切换规则：
+		@Bean //随机规则
+		public IRule myRule(){
+			
+			return new RandomRule();
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			

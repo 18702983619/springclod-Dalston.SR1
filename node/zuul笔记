@@ -1,0 +1,55 @@
+zuul：
+zuul包含了对请求的路由和过滤两个最主要的功能：
+	
+	其中路由功能负责将外部请求转发到具体的微服务实例上，是实现外部
+	访问统一入口的基础
+	而过滤功能则负责对请求的处理过程进行干预，是实现请求校验、服务聚合
+	等功能的基础。
+	zuul和eureka进行整合，将zuul自身注册为eureka服务治理下的应用，
+	同时eureka中获得其他微服务的消息，也即以后的访问微服务都是通过zuul
+	跳转后获得。
+	
+	注意：zuul服务最终还是会注册进eureka
+	
+提供 = 代理+路由+过滤   三大功能
+
+作用：
+	保安：zuul，eureka：物业，通过保安在物业中找企业
+	通过zuul在eureka中找微服务（服务提供者）
+
+基本配置
+	1、新建module模块：microservicecloud-zuul-gateway-9527 
+	2、pom.xml
+		<!-- zuul路由网关 -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-zuul</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka</artifactId>
+		</dependency>
+	3、YML
+			before：http://myzuul.com:9527/microservicecloud-dept/dept/get/1
+			为保护微服务名microservicecloud-dept增加以下映射
+		
+		zuul: 
+  routes: 
+    mydept.serviceId: microservicecloud-dept
+    mydept.path: /mydept/**
+		
+		 after：
+		 http://myzuul.com:9527/mydept/dept/get/1
+		 现在源路劲和现路劲都可以访问，我们要遵循单入口，单出口
+		 因此加：
+		 #ignored-services: microservicecloud-dept
+  		 prefix: /atguigu
+  		 ignored-services: "*" 通配所有微服务名
+  		 #prefix: /atguigu-->http://myzuul.com:9527/mydept/dept/get/1
+  		 prefix: /atguigu-->http://myzuul.com:9527/atguigu/mydept/dept/get/1
+	4、hosts修改
+	5、主启动类
+	@EnableZuulProxy
+	6、启动
+	7、测试
+	

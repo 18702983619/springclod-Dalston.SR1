@@ -1,0 +1,34 @@
+概述：单词hystrix Dashboard
+
+	除了隔离依赖服务端的调用以外，hystrix还提供了准实时的调用监控（hystrix Dashboard）
+	hystrix会持续地记录所有通过hystrix发起的请求的执行信息，并以统计报表和图形的形式展示给
+	用户，包括每秒执行多少请求成功，多少失败等。netflix通过hystrix-metrics-event-steam项目
+	实现了对以上指标的监控，spring cloud也提供了hystrix Dashboard的整合，
+	对监控内容转化成可视化界面
+	
+测试：
+	1、启动：
+	启动集群7001 7002 7003
+	启动dept-hystrix-8001
+	启动9001
+	
+	2、配置：
+	http://hystrix-app:port/hystrix.stream 
+	==》http://localhost:8001/hystrix.stream
+	
+	填写监控地址：9001在监控8001
+		要监控谁就填谁：http://localhost:8001/hystrix.stream
+		delay ：2秒中：2000ms
+		title:demo01 
+		url:http://localhost:9001/hystrix/monitor
+	3、查看：
+	7色
+	1圈
+	1线
+	整图说明
+	搞懂才 能看懂复杂的
+	实心圆：共两种含义，它通过颜色的变化代表了实例的健康程度，它的健康度
+	从绿色《黄色《橙色《红色递减，该实心圆除了颜色的变化之外，它的大小也会根据实例的
+	请求流量的变化，流量越大该实心圆就越大。所以通过该实心圆的展示
+	就可以在大量的实例中快速的发现故障实例呢高压实例。		
+			
