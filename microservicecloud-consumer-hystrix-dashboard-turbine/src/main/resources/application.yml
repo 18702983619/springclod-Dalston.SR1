@@ -1,0 +1,40 @@
+server:
+  port: 9001
+     
+spring:
+   application:
+    name:  service-turbine
+      
+eureka:
+  client: #客户端注册进eureka服务列表内
+    service-url: 
+       #单机efaultZone: http://localhost:7001/eureka
+       defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/
+  instance:
+    instance-id: service-turbine-hystrix    #自定义hystrix相关的服务名称信息
+    prefer-ip-address: true     #访问路径可以显示IP地址
+#turbine: 
+  #aggregator:    
+   # clusterConfig: default   # 指定聚合哪些集群，多个使用","分割，默认为default,可使用http://.../turbine.stream?cluster={clusterConfig之一}访问 
+  #appConfig: MICROSERVICECLOUD-DEPT  ### 配置Eureka中的serviceId列表，表明监控哪些服务 
+    #clusterNameExpression: new String("default")  
+    # 1. clusterNameExpression指定集群名称，默认表达式appName；此时：turbine.aggregator.clusterConfig需要配置想要监控的应用名称  
+    # 2. 当clusterNameExpression: default时，turbine.aggregator.clusterConfig可以不写，因为默认就是default  
+    # 3. 当clusterNameExpression: metadata['cluster']时，假设想要监控的应用配置了eureka.instance.metadata-map.cluster: ABC，则需要配置，同时turbine.aggregator.clusterConfig: ABC
+#聚合的工程  这里演示聚合ribbon-consumer,feign-consumer这两个消费工程
+#turbine:
+  #aggregator:
+    #cluster-config: default 
+  # 使用同一主机上的服务通过主机号与端口号组合进行区分
+  #app-config: MICROSERVICECLOUD-DEPT
+  #cluster-name-expression: new String("default")
+  #combine-host-port: true #老版本默认是false ，新版本默认是true #同一主机默认是合并hosts 例如hosts=3
+turbine:
+  app-config: MICROSERVICECLOUD-DEPT
+  cluster-name-expression: new String("default")
+  combine-host-port: true  
+info:
+  app.name: atguigu-microservicecloud
+  company.name: www.atguigu.com
+  build.artifactId: $project.artifactId$
+  build.version: $project.version$
